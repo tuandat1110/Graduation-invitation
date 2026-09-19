@@ -43,7 +43,7 @@ jobs:
     needs: test-and-build
     runs-on: ubuntu-latest
     # Chỉ chạy deploy khi commit nằm trên nhánh main VÀ đã cấu hình VPS_HOST
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
 
     steps:
       - name: Check VPS Configuration
@@ -67,7 +67,7 @@ jobs:
           script: |
             set -e
             cd /root/MyGraduation
-            git fetch origin main
-            git reset --hard origin/main
+            git fetch origin master
+            git reset --hard origin/master
             docker compose up -d --build
             docker image prune -f

@@ -38,7 +38,6 @@
     position: relative;
   }
 
-  /* Nền hoa văn lưới vi mạch & điểm LED ma trận in chìm toàn trang */
   body::before {
     content: "";
     position: absolute;
@@ -87,6 +86,16 @@
   @keyframes circuitFloatSlow {
     0%, 100% { transform: translateY(0px) rotate(0deg); }
     50% { transform: translateY(-12px) rotate(1deg); }
+  }
+
+  /* ---------- Hiệu ứng "dòng điện chạy" trên mạch nền hero ---------- */
+  .circuit-canvas-bg path.energized {
+    stroke-dasharray: 14 10;
+    animation: currentFlow 2.6s linear infinite;
+  }
+
+  @keyframes currentFlow {
+    to { stroke-dashoffset: -240; }
   }
 
   /* ---------- HERO SECTION ---------- */
@@ -266,6 +275,22 @@
 
   .linux-console-pill .cmd { color: var(--led-green); }
 
+  .console-typed::after {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 13px;
+    background: var(--gold);
+    margin-left: 2px;
+    vertical-align: -2px;
+    animation: caretBlink 0.9s step-end infinite;
+  }
+
+  @keyframes caretBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
   .hero-date {
     margin-top: 32px;
     display: flex;
@@ -279,7 +304,7 @@
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 16px;
     padding: 14px 20px;
-    min-width: 96px;
+    min-width: 78px;
     text-align: center;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   }
@@ -291,6 +316,7 @@
     color: #FFE699;
     display: block;
     line-height: 1.1;
+    font-variant-numeric: tabular-nums;
   }
 
   .hero-date .d .lbl {
@@ -299,6 +325,35 @@
     letter-spacing: 0.1em;
     color: rgba(255, 255, 255, 0.75);
     margin-top: 4px;
+  }
+
+  .hero-cta-row {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .cal-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1.5px solid rgba(221, 168, 59, 0.55);
+    border-radius: 100px;
+    color: var(--gold-light);
+    font-weight: 600;
+    font-size: 13.5px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    font-family: inherit;
+  }
+
+  .cal-btn:hover {
+    background: rgba(221, 168, 59, 0.18);
+    transform: translateY(-2px);
   }
 
   .hero-visual {
@@ -383,13 +438,13 @@
       align-items: center;
     }
     .hero-date { justify-content: center; }
+    .hero-cta-row { justify-content: center; }
     .avatar-card-frame {
       width: 280px;
       height: 360px;
     }
   }
 
-  /* ---------- SECTION SHARED STYLING WITH WATERMARK PATTERNS ---------- */
   section {
     padding: 90px 24px;
     max-width: 860px;
@@ -398,7 +453,6 @@
     z-index: 1;
   }
 
-  /* Họa tiết bo mạch in chìm hai bên lề màn hình lớn */
   .section-bg-watermark-left,
   .section-bg-watermark-right {
     position: absolute;
@@ -485,7 +539,6 @@
     max-width: 600px;
   }
 
-  /* ---------- EVENT DETAILS CARDS (HỌA TIẾT & WATERMARK NỔI BẬT) ---------- */
   .details {
     margin-top: 36px;
     display: grid;
@@ -516,7 +569,6 @@
     background: linear-gradient(to bottom, var(--gold), var(--red-primary));
   }
 
-  /* Vector watermark in chìm tinh tế góc thẻ */
   .detail-item::after {
     content: "";
     position: absolute;
@@ -602,6 +654,46 @@
     color: var(--gold);
   }
 
+  .place-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .place-link .place-name {
+    color: var(--ink);
+    transition: color 0.2s ease;
+  }
+
+  .place-link .place-school {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    margin-top: 3px;
+  }
+
+  .place-link .map-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Fira Code', monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--red-primary);
+    margin-top: 6px;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  .place-link:hover .place-name,
+  .place-link:hover .map-tag {
+    color: var(--gold);
+  }
+
+  .place-link:hover .map-tag {
+    transform: translateX(3px);
+  }
+
   @media (max-width: 600px) {
     .details { grid-template-columns: 1fr; }
     section { padding: 64px 20px; }
@@ -620,7 +712,6 @@
     z-index: 1;
   }
 
-  /* Chip vi mạch SoC in chìm góc trên bên phải */
   .rsvp-container::before {
     content: "";
     position: absolute;
@@ -635,7 +726,6 @@
     pointer-events: none;
   }
 
-  /* SVG Mạch in chìm góc dưới của form */
   .rsvp-container::after {
     content: "";
     position: absolute;
@@ -732,8 +822,14 @@
     box-shadow: 0 4px 16px rgba(221, 168, 59, 0.35);
   }
 
+  .submit-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
   .submit-btn {
-    align-self: flex-start;
     background: linear-gradient(135deg, #FFE894 0%, var(--gold) 100%);
     color: #3D0808;
     border: none;
@@ -761,6 +857,28 @@
     transform: none;
   }
 
+  .cal-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 26px;
+    background: transparent;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 100px;
+    color: rgba(253, 251, 247, 0.9);
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+    font-family: inherit;
+  }
+
+  .cal-btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--gold);
+  }
+
   .form-msg {
     font-size: 14.5px;
     font-weight: 500;
@@ -779,123 +897,6 @@
     background: rgba(211, 47, 47, 0.2);
     border: 1px solid rgba(239, 154, 154, 0.4);
     color: #FFC0C0;
-  }
-
-  /* ---------- MODERN CHAT BUBBLE WISHES (VỚI HỌA TIẾT NỀN CHÌM) ---------- */
-  .wishes-wrapper {
-    margin-top: 36px;
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(225, 218, 205, 0.9);
-    border-radius: var(--radius-lg);
-    padding: 28px;
-    backdrop-filter: blur(10px);
-    box-shadow: var(--shadow-soft);
-    position: relative;
-    overflow: hidden;
-  }
-
-  /* Mạch điện chìm góc trên bên phải khung lưu bút */
-  .wishes-wrapper::after {
-    content: "";
-    position: absolute;
-    right: -20px;
-    top: -20px;
-    width: 160px;
-    height: 160px;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="%238E1515" stroke-width="1.8"><path d="M10,20 L45,20 L65,40 L90,40"/><circle cx="90" cy="40" r="4" fill="%238E1515"/><path d="M20,60 L50,60 L70,80 L95,80"/><circle cx="95" cy="80" r="4" fill="%238E1515"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-    opacity: 0.085;
-    pointer-events: none;
-  }
-
-  .wishes-list {
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .wish-bubble-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    animation: fadeInUp 0.4s ease forwards;
-  }
-
-  .wish-avatar {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 16px;
-    color: #FFFFFF;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    border: 2px solid #FFFFFF;
-    text-transform: uppercase;
-  }
-
-  .wish-content {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    max-width: calc(100% - 58px);
-  }
-
-  .wish-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 6px;
-    flex-wrap: wrap;
-  }
-
-  .wish-author {
-    font-family: 'Fraunces', serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--ink);
-  }
-
-  .status {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 2px 10px;
-    border-radius: 100px;
-  }
-
-  .status.yes { background: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9; }
-  .status.no { background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
-  .status.maybe { background: #FFF8E1; color: #F57F17; border: 1px solid #FFE082; }
-
-  .bubble-body {
-    background: #FFFFFF;
-    color: #332A2A;
-    padding: 14px 18px;
-    border-radius: 4px 20px 20px 20px;
-    font-size: 15px;
-    line-height: 1.6;
-    border: 1px solid rgba(225, 218, 205, 0.85);
-    box-shadow: 0 4px 16px -2px rgba(45, 15, 15, 0.05);
-    word-break: break-word;
-  }
-
-  .wishes-empty {
-    padding: 40px 20px;
-    text-align: center;
-    color: var(--ink-muted);
-    font-size: 15px;
-    background: rgba(255, 255, 255, 0.7);
-    border-radius: 16px;
-    border: 1px dashed rgba(225, 218, 205, 0.9);
   }
 
   /* ---------- FOOTER TECH TERMINAL DESIGN ---------- */
@@ -972,9 +973,9 @@
   <!-- HERO SECTION -->
   <div class="hero">
     <svg class="circuit-canvas-bg" viewBox="0 0 1000 600" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,80 L250,80 L320,150 L580,150 L640,90 L1000,90" stroke="url(#circuitGold)" stroke-width="1.5" stroke-dasharray="6 4" />
-      <path d="M0,320 L180,320 L240,380 L600,380 L660,320 L1000,320" stroke="url(#circuitGold)" stroke-width="1.5" />
-      <path d="M150,600 L150,420 L220,350 L400,350 L460,410 L460,600" stroke="rgba(221,168,59,0.3)" stroke-width="1.2" stroke-dasharray="4 4" />
+      <path class="energized" d="M0,80 L250,80 L320,150 L580,150 L640,90 L1000,90" stroke="url(#circuitGold)" stroke-width="1.5" />
+      <path class="energized" d="M0,320 L180,320 L240,380 L600,380 L660,320 L1000,320" stroke="url(#circuitGold)" stroke-width="1.5" style="animation-delay: -1.2s;" />
+      <path class="energized" d="M150,600 L150,420 L220,350 L400,350 L460,410 L460,600" stroke="rgba(221,168,59,0.4)" stroke-width="1.2" style="animation-delay: -0.6s;" />
       <circle cx="320" cy="150" r="4" fill="var(--gold)" />
       <circle cx="640" cy="90" r="4" fill="var(--led-green)" />
       <circle cx="240" cy="380" r="4" fill="var(--gold)" />
@@ -1013,13 +1014,19 @@
 
         <div class="linux-console-pill">
           <span class="cmd">dat@bk:~$</span>
-          <span>uptime --ceremony 2026</span>
+          <span id="consoleTyped" class="console-typed"></span>
         </div>
 
-        <div class="hero-date">
-          <div class="d"><span class="num">28</span><span class="lbl">THÁNG 9</span></div>
-          <div class="d"><span class="num">09:00</span><span class="lbl">SÁNG</span></div>
-          <div class="d"><span class="num">2026</span><span class="lbl">NĂM</span></div>
+        <div class="hero-date" id="countdown">
+          <div class="d"><span class="num" id="cdDays">--</span><span class="lbl">NGÀY</span></div>
+          <div class="d"><span class="num" id="cdHours">--</span><span class="lbl">GIỜ</span></div>
+          <div class="d"><span class="num" id="cdMins">--</span><span class="lbl">PHÚT</span></div>
+          <div class="d"><span class="num" id="cdSecs">--</span><span class="lbl">GIÂY</span></div>
+        </div>
+
+        <div class="hero-cta-row">
+          <a href="#rsvp" class="cal-btn">✨ Xác nhận tham dự</a>
+          <button type="button" class="cal-btn" id="addToCalHero">🗓️ Thêm vào lịch</button>
         </div>
       </div>
 
@@ -1039,7 +1046,6 @@
 
   <!-- DETAILS SECTION -->
   <section>
-    <!-- SVG Vi mạch in chìm hai bên lề ngoài -->
     <svg class="section-bg-watermark-left" viewBox="0 0 200 300" fill="none" stroke="var(--gold)" stroke-width="1.8">
       <path d="M0,50 L80,50 L120,90 L120,200 L160,240 L200,240" />
       <circle cx="120" cy="90" r="5" fill="var(--gold)" />
@@ -1066,14 +1072,14 @@
       <span>📍 Thông tin buổi lễ</span>
     </div>
     <h2>Địa điểm &amp; thời gian</h2>
-    <p class="lead">Buổi lễ sẽ diễn ra tại hội trường trường, sau đó là tiệc mừng và chụp ảnh kỷ niệm cùng người thân, bạn bè.</p>
+    <p class="lead">Buổi lễ trao bằng sẽ diễn ra tại hội trường, sau đó là thời gian chụp ảnh kỷ niệm và trò chuyện cùng bạn bè, người thân.</p>
     
     <div class="details">
       <div class="detail-item item-date">
         <div class="detail-top-bar">
           <span class="k">📅 Ngày tổ chức</span>
         </div>
-        <div class="v">Chủ nhật, 28/09/2026</div>
+        <div class="v">Chủ nhật, 27/09/2026</div>
       </div>
 
       <div class="detail-item item-time">
@@ -1087,7 +1093,13 @@
         <div class="detail-top-bar">
           <span class="k">📍 Địa điểm</span>
         </div>
-        <div class="v">Hội trường A, ĐH Bách Khoa Hà Nội</div>
+        <div class="v">
+          <a class="place-link" id="mapLink" href="#" target="_blank" rel="noopener">
+            <div class="place-name">Hội trường C2</div>
+            <div class="place-school">Đại học Bách Khoa Hà Nội</div>
+            <div class="map-tag">↗ Mở Google Maps</div>
+          </a>
+        </div>
       </div>
 
       <div class="detail-item item-contact">
@@ -1095,7 +1107,7 @@
           <span class="k">📞 Liên hệ</span>
         </div>
         <div class="v">
-          <a href="tel:03873045680" class="contact-link">03873045680</a>
+          <a href="tel:0387304580" class="contact-link">0387304580</a>
         </div>
       </div>
     </div>
@@ -1103,6 +1115,14 @@
 
   <!-- RSVP SECTION -->
   <section id="rsvp">
+    <div class="circuit-led-divider">
+      <div class="circuit-led-node-start"></div>
+      <div class="circuit-led-track">
+        <div class="circuit-led-pulse"></div>
+      </div>
+      <div class="circuit-led-node-end"></div>
+    </div>
+
     <div class="rsvp-container">
       <div class="section-label">
         <span>✉️ Xác nhận tham dự</span>
@@ -1132,41 +1152,14 @@
           <label for="message">Lời chúc</label>
           <textarea id="message" name="message" placeholder="Gửi vài lời chúc mừng tốt nghiệp nhé..." maxlength="300"></textarea>
         </div>
-        <button type="submit" class="submit-btn" id="submitBtn">
-          <span>Gửi xác nhận &amp; Lời chúc</span> 🎓
-        </button>
+        <div class="submit-row">
+          <button type="submit" class="submit-btn" id="submitBtn">
+            <span>Gửi xác nhận &amp; Lời chúc</span> 🎓
+          </button>
+          <button type="button" class="cal-btn-ghost" id="addToCalRsvp">🗓️ Thêm sự kiện vào lịch</button>
+        </div>
         <div class="form-msg" id="formMsg"></div>
       </form>
-    </div>
-  </section>
-
-  <!-- WISHES WALL SECTION -->
-  <section id="wishes">
-    <!-- SVG Vi mạch in chìm hai bên lề ngoài -->
-    <svg class="section-bg-watermark-left" viewBox="0 0 200 300" fill="none" stroke="var(--gold)" stroke-width="1.8">
-      <path d="M0,100 L70,100 L110,140 L110,240 L150,280" />
-      <circle cx="110" cy="140" r="4.5" fill="var(--gold)" />
-      <path d="M20,180 L60,180 L80,200 L80,290" />
-    </svg>
-
-    <div class="circuit-led-divider">
-      <div class="circuit-led-node-start"></div>
-      <div class="circuit-led-track">
-        <div class="circuit-led-pulse"></div>
-      </div>
-      <div class="circuit-led-node-end"></div>
-    </div>
-
-    <div class="section-label">
-      <span>💬 Góc lưu bút</span>
-    </div>
-    <h2>Bong bóng lời chúc</h2>
-    <p class="lead">Những lời nhắn gửi thân thương từ bạn bè và người thân.</p>
-    
-    <div class="wishes-wrapper">
-      <div class="wishes-list" id="wishesList">
-        <div class="wishes-empty">Đang tải danh sách lời chúc...</div>
-      </div>
     </div>
   </section>
 
@@ -1191,85 +1184,9 @@
   </footer>
 
 <script>
-// Giữ nguyên 100% logic backend & DOM IDs
 const form = document.getElementById('rsvpForm');
 const submitBtn = document.getElementById('submitBtn');
 const formMsg = document.getElementById('formMsg');
-const wishesList = document.getElementById('wishesList');
-
-const avatarGradients = [
-  'linear-gradient(135deg, #FF6B6B, #8E1515)',
-  'linear-gradient(135deg, #F98866, #D4AF37)',
-  'linear-gradient(135deg, #4facfe, #00f2fe)',
-  'linear-gradient(135deg, #43e97b, #38f9d7)',
-  'linear-gradient(135deg, #fa709a, #fee140)',
-  'linear-gradient(135deg, #667eea, #764ba2)',
-  'linear-gradient(135deg, #b88746, #fdf5a6)'
-];
-
-function getAvatarStyle(name) {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const index = Math.abs(hash) % avatarGradients.length;
-  return avatarGradients[index];
-}
-
-function getInitials(name) {
-  if (!name) return '?';
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
-  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-function renderWishes(wishes) {
-  if (!wishes || wishes.length === 0) {
-    wishesList.innerHTML = '<div class="wishes-empty">Chưa có lời chúc nào — hãy là người đầu tiên gửi lời chúc nhé! 💬</div>';
-    return;
-  }
-  const statusLabel = { yes: 'Sẽ đến 🎉', no: 'Không đến 💌', maybe: 'Chưa chắc 💭' };
-  
-  wishesList.innerHTML = wishes.map(w => {
-    const rawName = w.name || 'Người ẩn danh';
-    const initials = getInitials(rawName);
-    const grad = getAvatarStyle(rawName);
-    const attVal = w.attending || w.attend || 'yes';
-    const statusText = statusLabel[attVal] || 'Đã gửi';
-
-    return `
-      <div class="wish-bubble-item">
-        <div class="wish-avatar" style="background: ${grad};">${escapeHtml(initials)}</div>
-        <div class="wish-content">
-          <div class="wish-header">
-            <span class="wish-author">${escapeHtml(rawName)}</span>
-            <span class="status ${escapeHtml(attVal)}">${statusText}</span>
-          </div>
-          ${w.message ? `<div class="bubble-body">${escapeHtml(w.message)}</div>` : `<div class="bubble-body" style="font-style:italic; opacity:0.7;">(Không kèm lời nhắn)</div>`}
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-async function loadWishes() {
-  try {
-    const res = await fetch('/api/wishes');
-    if (!res.ok) throw new Error('Không thể tải danh sách');
-    const data = await res.json();
-    renderWishes(data);
-  } catch (err) {
-    console.error(err);
-    wishesList.innerHTML = '<div class="wishes-empty">Chưa thể tải lời chúc lúc này.</div>';
-  }
-}
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -1308,8 +1225,6 @@ form.addEventListener('submit', async (e) => {
     formMsg.classList.add('show', 'ok');
     form.reset();
     document.getElementById('att-yes').checked = true;
-
-    await loadWishes();
   } catch (err) {
     console.error(err);
     formMsg.textContent = 'Có lỗi xảy ra khi gửi, vui lòng thử lại.';
@@ -1320,7 +1235,116 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-loadWishes();
+const EVENT_TITLE = 'Lễ Tốt Nghiệp - Nguyễn Tuấn Đạt';
+const EVENT_LOCATION = 'Hội trường C2, Đại học Bách Khoa Hà Nội';
+const EVENT_START = new Date('2026-09-27T09:00:00+07:00');
+const EVENT_END = new Date('2026-09-27T11:30:00+07:00');
+const EVENT_DETAILS = 'Lễ tốt nghiệp ngành Kỹ thuật máy tính - Nguyễn Tuấn Đạt. Trân trọng kính mời bạn đến chung vui!';
+
+function pad2(n) { return String(n).padStart(2, '0'); }
+
+function updateCountdown() {
+  const now = new Date();
+  const diff = EVENT_START.getTime() - now.getTime();
+  const elD = document.getElementById('cdDays');
+  const elH = document.getElementById('cdHours');
+  const elM = document.getElementById('cdMins');
+  const elS = document.getElementById('cdSecs');
+  if (!elD) return;
+
+  if (diff <= 0) {
+    elD.textContent = '00';
+    elH.textContent = '00';
+    elM.textContent = '00';
+    elS.textContent = '00';
+    return;
+  }
+
+  const totalSeconds = Math.floor(diff / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const mins = Math.floor((totalSeconds % 3600) / 60);
+  const secs = totalSeconds % 60;
+
+  elD.textContent = pad2(days);
+  elH.textContent = pad2(hours);
+  elM.textContent = pad2(mins);
+  elS.textContent = pad2(secs);
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+function typeConsoleLine() {
+  const target = document.getElementById('consoleTyped');
+  if (!target) return;
+  const text = 'uptime --ceremony 2026';
+  let i = 0;
+  target.textContent = '';
+  const timer = setInterval(() => {
+    target.textContent = text.slice(0, i + 1);
+    i++;
+    if (i >= text.length) clearInterval(timer);
+  }, 65);
+}
+window.addEventListener('load', () => setTimeout(typeConsoleLine, 400));
+
+const mapLinkEl = document.getElementById('mapLink');
+if (mapLinkEl) {
+  mapLinkEl.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(EVENT_LOCATION);
+}
+
+function toGCalDate(d) {
+  return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+}
+
+function openGoogleCalendar() {
+  const url = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+    + '&text=' + encodeURIComponent(EVENT_TITLE)
+    + '&dates=' + toGCalDate(EVENT_START) + '/' + toGCalDate(EVENT_END)
+    + '&details=' + encodeURIComponent(EVENT_DETAILS)
+    + '&location=' + encodeURIComponent(EVENT_LOCATION);
+  window.open(url, '_blank', 'noopener');
+}
+
+function downloadIcs() {
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Le Tot Nghiep//VN',
+    'BEGIN:VEVENT',
+    'UID:' + Date.now() + '@graduation2026',
+    'DTSTAMP:' + toGCalDate(new Date()),
+    'DTSTART:' + toGCalDate(EVENT_START),
+    'DTEND:' + toGCalDate(EVENT_END),
+    'SUMMARY:' + EVENT_TITLE,
+    'DESCRIPTION:' + EVENT_DETAILS,
+    'LOCATION:' + EVENT_LOCATION,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'le-tot-nghiep-tuan-dat.ics';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function handleAddToCalendar() {
+  const useGoogle = confirm('Mở Google Calendar để thêm sự kiện?\n(Bấm "Hủy" để tải file lịch .ics dùng cho Outlook/Apple Calendar)');
+  if (useGoogle) {
+    openGoogleCalendar();
+  } else {
+    downloadIcs();
+  }
+}
+
+const addToCalHero = document.getElementById('addToCalHero');
+const addToCalRsvp = document.getElementById('addToCalRsvp');
+if (addToCalHero) addToCalHero.addEventListener('click', handleAddToCalendar);
+if (addToCalRsvp) addToCalRsvp.addEventListener('click', handleAddToCalendar);
 </script>
 
 </body>
