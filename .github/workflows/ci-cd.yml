@@ -1,0 +1,73 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  # Cho phép bấm chạy bằng tay (Manual trigger) từ tab Actions trên GitHub
+  workflow_dispatch:
+
+jobs:
+  # ==========================================
+  # GIAI ĐOẠN 1: CI (Chạy thử nghiệm trên GitHub)
+  # ==========================================
+  test-and-build:
+    name: Build & Validate Docker Containers
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Test syntax compose và build thử container backend trên môi trường Linux
+      - name: Build Docker Compose images
+        run: |
+          docker compose build backend
+
+      # Kiểm tra cú pháp các file cấu hình
+      - name: Validate Nginx Config
+        run: |
+          docker run --rm -v $(pwd)/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro nginx:alpine nginx -t
+
+  # ==========================================
+  # GIAI ĐOẠN 2: CD (Deploy lên VPS)
+  # ==========================================
+  deploy:
+    name: Deploy to VPS
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    # Chỉ chạy deploy khi commit nằm trên nhánh main VÀ đã cấu hình VPS_HOST
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Check VPS Configuration
+        id: check_vps
+        run: |
+          if [ -z "${{ secrets.VPS_HOST }}" ]; then
+            echo "::notice ::Chưa cấu hình VPS_HOST secrets. Bỏ qua bước Deploy lên VPS."
+            echo "configured=false" >> $GITHUB_OUTPUT
+          else
+            echo "configured=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy via SSH to VPS
+        if: steps.check_vps.outputs.configured == 'true'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            set -e
+            cd /root/MyGraduation
+            git fetch origin main
+            git reset --hard origin/main
+            docker compose up -d --build
+            docker image prune -f
